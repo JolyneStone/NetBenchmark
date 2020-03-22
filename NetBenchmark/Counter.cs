@@ -53,7 +53,7 @@ namespace NetBenchmark
             {
                 Interlocked.Exchange(ref _max, time);
             }
-            if (_min > time)
+            if (_min > time || _min == 0)
             {
                 Interlocked.Exchange(ref _min, time);
             }
