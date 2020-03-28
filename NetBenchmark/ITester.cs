@@ -9,7 +9,7 @@ namespace NetBenchmark
     {
         Runner Runner { get; set; }
 
-        Task Execute();
+        Task<bool> Execute();
 
     }
     

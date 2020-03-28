@@ -18,6 +18,8 @@ namespace NetBenchmark
 
         public Counter Error { get; private set; } = new Counter("Error");
 
+        public Counter Fail { get; private set; } = new Counter("Fail");
+
         public bool Status { get; set; } = false;
 
         public List<ITester> Testers { get; private set; } = new List<ITester>();
@@ -58,9 +60,16 @@ namespace NetBenchmark
                 long time = 0;
                 try
                 {
-                    await item.Execute();
+                    var result = await item.Execute();
                     time = stopwatch.ElapsedMilliseconds - startTime;
-                    Success.Add(1, time);
+                    if(result)
+                    {
+                        Success.Add(1, time);
+                    }
+                    else
+                    {
+                        Fail.Add(1, time);
+                    }
                 }
                 catch (Exception e_)
                 {
@@ -125,6 +134,7 @@ namespace NetBenchmark
 
             Console.WriteLine("-".PadRight(WIDTH, '-'));
             Success.Print();
+            Fail.Print();
             Error.Print();
             Console.WriteLine("-".PadRight(WIDTH, '-'));
             _timesStatistics.Print();

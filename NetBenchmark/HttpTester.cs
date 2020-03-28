@@ -16,13 +16,13 @@ namespace NetBenchmark
 
         private HttpClient _httpClient;
 
-        public Func<IHttpHandler, Task> Handler { get; set; }
+        public Func<IHttpHandler, Task<bool>> Handler { get; set; }
 
         public Runner Runner { get; set; }
 
-        public async Task Execute()
+        public async Task<bool> Execute()
         {
-            await Handler(this);
+            return await Handler(this);
         }
 
         public async Task<HttpContent> GetAsync(string url)

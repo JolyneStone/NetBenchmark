@@ -24,6 +24,7 @@ namespace Simples
                 {
                     { "id", "1" }
                 }));
+                return true;
             });
 
             runer.Run();

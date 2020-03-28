@@ -7,7 +7,7 @@ namespace NetBenchmark
 {
     public class Benchmark
     {
-        public static Runner Http(string name, IHttpClientFactory clientFactory, int connections, int interval, Func<IHttpHandler, Task> handler)
+        public static Runner Http(string name, IHttpClientFactory clientFactory, int connections, int interval, Func<IHttpHandler, Task<bool>> handler)
         {
             Runner runer = new Runner() { Interval = interval };
             runer.Name = $"HTTP {name} [Connections:{connections:###,###,###}]";
@@ -21,7 +21,7 @@ namespace NetBenchmark
             return runer;
         }
 
-        public static Runner Http(IHttpClientFactory clientFactory, int connections, int interval, Func<IHttpHandler, Task> handler)
+        public static Runner Http(IHttpClientFactory clientFactory, int connections, int interval, Func<IHttpHandler, Task<bool>> handler)
         {
             Runner runer = new Runner() { Interval = interval };
             runer.Name = $"HTTP [Connections:{connections:###,###,###}]";
