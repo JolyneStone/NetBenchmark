@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Simples
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddHttpClient("test", c =>
@@ -27,7 +28,7 @@ namespace Simples
                 return true;
             });
 
-            runer.Run();
+            await runer.RunAsync();
             Console.ReadKey();
         }
     }

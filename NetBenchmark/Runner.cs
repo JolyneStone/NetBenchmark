@@ -9,6 +9,11 @@ namespace NetBenchmark
 {
     public class Runner : IDisposable
     {
+        private volatile bool Printing = false;
+
+        private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+        private readonly TimesStatistics _timesStatistics = new TimesStatistics();
 
         public const int WIDTH = 75;
 
@@ -26,13 +31,10 @@ namespace NetBenchmark
 
         public int Interval { get; set; }
 
-        private TimesStatistics _timesStatistics = new TimesStatistics();
-
         public Action<ITester, Exception> OnError { get; set; }
 
-        private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-        private async Task OnPreheating(ITester item)
+        private async Task OnPreheatingAsync(ITester item)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -52,7 +54,7 @@ namespace NetBenchmark
             }
         }
 
-        private async void OnRunItem(ITester item)
+        private async Task OnRunItemAsync(ITester item)
         {
             while (Status)
             {
@@ -99,6 +101,8 @@ namespace NetBenchmark
 
         private void Print()
         {
+            if (!Printing)
+                Printing = true;
             string value = "NetBenchmark";
             Console.Clear();
             Console.SetWindowPosition(0, 0);
@@ -138,23 +142,24 @@ namespace NetBenchmark
             Error.Print();
             Console.WriteLine("-".PadRight(WIDTH, '-'));
             _timesStatistics.Print();
+            Printing = false;
         }
 
-        public async void Run()
+        public async Task RunAsync()
         {
             Status = true;
             foreach (var item in Testers)
             {
-                await OnPreheating(item);
+                await OnPreheatingAsync(item);
             }
             stopwatch.Restart();
             _tasks = new List<Task>();
             foreach (var item in Testers)
             {
-                var task = Task.Factory.StartNew(() =>
+                var task = Task.Factory.StartNew(async () =>
                 {
                     if (Status)
-                        OnRunItem(item);
+                        await OnRunItemAsync(item);
                     Thread.Sleep(Interval);
                 });
                 _tasks.Add(task);
